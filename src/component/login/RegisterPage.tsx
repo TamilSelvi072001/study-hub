@@ -1,17 +1,16 @@
-// src/components/RegisterPage.tsx
-
 import React, { useState } from "react";
 import { registerUser } from "../../apiService/LoginService";
-import { useNavigate } from "react-router-dom"; // Add this at the top
+import { useNavigate } from "react-router-dom";
 
 const RegisterPage = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [role, setRole] = useState<string>("USER"); // Default role
+  const [role, setRole] = useState<string>("USER");
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const navigate = useNavigate(); // Add this inside your component before return
+  const navigate = useNavigate();
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -38,113 +37,98 @@ const RegisterPage = () => {
   };
 
   return (
-    <div style={{ maxWidth: "400px", margin: "0 auto", padding: "20px" }}>
-      <h2>Register</h2>
+    <div className="min-h-screen bg-[#0c2045] flex items-center justify-center">
+      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+        <h2 className="text-2xl font-bold mb-6 text-center text-[#0c2045]">
+          Register for FocusHub
+        </h2>
 
-      {error && (
-        <p
-          style={{
-            color: "red",
-            backgroundColor: "#ffe6e6",
-            padding: "10px",
-            borderRadius: "5px",
-            marginBottom: "10px",
-          }}
-        >
-          {error}
-        </p>
-      )}
+        {error && (
+          <p className="text-red-700 bg-red-100 p-3 mb-4 rounded">{error}</p>
+        )}
 
-      {success && (
-        <p
-          style={{
-            color: "green",
-            backgroundColor: "#e6ffe6",
-            padding: "10px",
-            borderRadius: "5px",
-            marginBottom: "10px",
-          }}
-        >
-          {success}
-        </p>
-      )}
+        {success && (
+          <p className="text-green-700 bg-green-100 p-3 mb-4 rounded">
+            {success}
+          </p>
+        )}
 
-      <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: "10px" }}>
-          <label htmlFor="email">Email:</label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setEmail(e.target.value)
-            }
-            required
-            style={{ width: "100%", padding: "8px", marginTop: "5px" }}
-          />
-        </div>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Email
+            </label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="mt-1 w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#0c2045]"
+            />
+          </div>
 
-        <div style={{ marginBottom: "10px" }}>
-          <label htmlFor="password">Password:</label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setPassword(e.target.value)
-            }
-            required
-            style={{ width: "100%", padding: "8px", marginTop: "5px" }}
-          />
-        </div>
+          <div>
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Password
+            </label>
+            <input
+              type="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="mt-1 w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#0c2045]"
+            />
+          </div>
 
-        <div style={{ marginBottom: "10px" }}>
-          <label htmlFor="role">Role:</label>
-          <select
-            id="role"
-            value={role}
-            onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-              setRole(e.target.value)
-            }
-            required
-            style={{ width: "100%", padding: "8px", marginTop: "5px" }}
+          <div>
+            <label
+              htmlFor="role"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Role
+            </label>
+            <select
+              id="role"
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+              className="mt-1 w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#0c2045]"
+            >
+              <option value="USER">User</option>
+              <option value="ADMIN">Admin</option>
+            </select>
+          </div>
+
+          <button
+            type="submit"
+            disabled={isLoading}
+            className={`w-full py-2 px-4 rounded font-semibold text-white ${
+              isLoading
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-[#0c2045] hover:bg-[#143672] transition duration-300"
+            }`}
           >
-            <option value="USER">User</option>
-            <option value="ADMIN">Admin</option>
-          </select>
-        </div>
+            {isLoading ? "Registering..." : "Register"}
+          </button>
+        </form>
 
-        <button
-          type="submit"
-          disabled={isLoading}
-          style={{
-            padding: "10px",
-            width: "100%",
-            backgroundColor: isLoading ? "#ccc" : "#007bff",
-            color: "#fff",
-            border: "none",
-            cursor: isLoading ? "not-allowed" : "pointer",
-          }}
-        >
-          {isLoading ? "Registering..." : "Register"}
-        </button>
-      </form>
-
-      <p style={{ marginTop: "10px" }}>
-        Already have an account?{" "}
-        <button
-          onClick={() => navigate("/login")}
-          style={{
-            color: "#007bff",
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-            textDecoration: "underline",
-          }}
-        >
-          Login here
-        </button>
-      </p>
+        <p className="mt-4 text-center text-sm text-gray-600">
+          Already have an account?{" "}
+          <button
+            onClick={() => navigate("/login")}
+            className="text-[#0c2045] font-semibold underline hover:text-[#143672] transition"
+          >
+            Login here
+          </button>
+        </p>
+      </div>
     </div>
   );
 };

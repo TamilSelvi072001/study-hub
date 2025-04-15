@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { loginUser } from "../../apiService/LoginService";
-import { useNavigate } from "react-router-dom"; // 👈 Add this
+import { useNavigate } from "react-router-dom";
 
 const LoginPage: React.FC = () => {
   const [userName, setUserName] = useState<string>("");
@@ -8,7 +8,7 @@ const LoginPage: React.FC = () => {
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const navigate = useNavigate(); // 👈 Add this
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -37,88 +37,80 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div style={{ maxWidth: "400px", margin: "0 auto", padding: "20px" }}>
-      <h2>Login</h2>
+    <div className="min-h-screen bg-[#0c2045] flex items-center justify-center">
+      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+        <h2 className="text-2xl font-bold mb-6 text-center text-[#0c2045]">
+          Login to FocusHub
+        </h2>
 
-      {error && (
-        <p
-          style={{ color: "red", backgroundColor: "#ffe6e6", padding: "10px" }}
-        >
-          {error}
+        {error && (
+          <p className="text-red-700 bg-red-100 p-3 mb-4 rounded">{error}</p>
+        )}
+
+        {success && (
+          <p className="text-green-700 bg-green-100 p-3 mb-4 rounded">
+            {success}
+          </p>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label
+              htmlFor="username"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Username
+            </label>
+            <input
+              type="text"
+              id="username"
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
+              required
+              className="mt-1 w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#0c2045]"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Password
+            </label>
+            <input
+              type="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="mt-1 w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#0c2045]"
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={isLoading}
+            className={`w-full py-2 px-4 rounded font-semibold text-white ${
+              isLoading
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-[#0c2045] hover:bg-[#143672] transition duration-300"
+            }`}
+          >
+            {isLoading ? "Logging in..." : "Login"}
+          </button>
+        </form>
+
+        <p className="mt-4 text-center text-sm text-gray-600">
+          New user?{" "}
+          <button
+            onClick={() => navigate("/register")}
+            className="text-[#0c2045] font-semibold underline hover:text-[#143672] transition"
+          >
+            Register here
+          </button>
         </p>
-      )}
-
-      {success && (
-        <p
-          style={{
-            color: "green",
-            backgroundColor: "#e6ffe6",
-            padding: "10px",
-            borderRadius: "5px",
-          }}
-        >
-          {success}
-        </p>
-      )}
-
-      <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: "10px" }}>
-          <label htmlFor="username">Username:</label>
-          <input
-            type="text"
-            id="username"
-            value={userName}
-            onChange={(e) => setUserName(e.target.value)}
-            required
-            style={{ width: "100%", padding: "8px", marginTop: "5px" }}
-          />
-        </div>
-
-        <div style={{ marginBottom: "10px" }}>
-          <label htmlFor="password">Password:</label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            style={{ width: "100%", padding: "8px", marginTop: "5px" }}
-          />
-        </div>
-
-        <button
-          type="submit"
-          disabled={isLoading}
-          style={{
-            padding: "10px",
-            width: "100%",
-            backgroundColor: isLoading ? "#ccc" : "#28a745",
-            color: "#fff",
-            border: "none",
-            cursor: isLoading ? "not-allowed" : "pointer",
-          }}
-        >
-          {isLoading ? "Logging in..." : "Login"}
-        </button>
-      </form>
-
-      {/* 👇 Register link for new users */}
-      <p style={{ marginTop: "10px", textAlign: "center" }}>
-        New user?{" "}
-        <button
-          onClick={() => navigate("/register")}
-          style={{
-            color: "#007bff",
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-            textDecoration: "underline",
-            padding: 0,
-          }}
-        >
-          Register here
-        </button>
-      </p>
+      </div>
     </div>
   );
 };

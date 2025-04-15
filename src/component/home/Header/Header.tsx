@@ -1,13 +1,24 @@
 import React from "react";
-import "./styles.scss";
+import { useNavigate } from "react-router-dom";
 
-function Header() {
+const Header = () => {
+  const navigate = useNavigate();
+
+  const handleLoginClick = () => {
+    navigate("/login");
+  };
+
   return (
-    <div className="header">
-      <div className="left">FocusHub</div>
-      <div className="right">Login</div>
+    <div className="bg-[#0c2045] text-white flex justify-between items-center p-8 text-[1.5rem] font-bold">
+      <div>FocusHub</div>
+      <div
+        className="right cursor-pointer transition-colors duration-300 hover:text-[#cbd5e1] flex items-center gap-2"
+        onClick={handleLoginClick}
+      >
+        Login
+      </div>
     </div>
   );
-}
+};
 
 export default Header;
