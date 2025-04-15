@@ -1,0 +1,19 @@
+.header {
+  background-color: #0c2045;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 2rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.right {
+  cursor: pointer;
+  transition: color 0.3s;
+
+  &:hover {
+    color: #cbd5e1;
+  }
+}
