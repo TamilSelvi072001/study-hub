@@ -2,6 +2,8 @@
 
 export interface SearchPayload {
   fromDate: string;
+  fromTime: string;
+  toTime: string;
   location: string;
   numberOfPersons: number;
 }
