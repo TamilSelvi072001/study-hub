@@ -1,55 +1,43 @@
-import React, { useEffect, useState } from "react";
-import { searchSlots, SearchPayload } from "../../../apiService/SearchService";
+import React, { useState } from "react";
+import {
+  searchSlots,
+  SearchPayload,
+  mockResponse,
+} from "../../../apiService/SearchService";
+import Hub from "../../hub/Hub";
+import { Calendar } from "lucide-react";
 
-// Helper functions to get today's date and current time
-const getTodayDate = () => {
-  return new Date().toISOString().split("T")[0];
-};
-
-const getCurrentTime = () => {
-  const now = new Date();
-  const hours = String(now.getHours()).padStart(2, "0");
-  const minutes = String(now.getMinutes()).padStart(2, "0");
-  return `${hours}:${minutes}`;
-};
-
-const getEndOfDay = () => {
-  return "23:59"; // End of today's time
-};
+const getTodayDate = () => new Date().toISOString().split("T")[0];
 
 const SearchBar: React.FC = () => {
-  const [fromDate, setFromDate] = useState<string>(getTodayDate());
-  const [fromTime, setFromTime] = useState<string>("");
-  const [toTime, setToTime] = useState<string>("");
+  const [date, setDate] = useState<string>(getTodayDate());
   const [location, setLocation] = useState<string>("");
-  const [numberOfPersons, setNumberOfPersons] = useState<string>("");
-
-  useEffect(() => {
-    // Reset fromTime and toTime if the fromDate is today and fromTime is past
-    if (fromDate === getTodayDate() && fromTime < getCurrentTime()) {
-      setFromTime("");
-      setToTime("");
-    }
-  }, [fromDate, fromTime]);
+  const [hubData, setHubData] = useState<any>(null);
 
   const handleSearch = async () => {
-    // Validation: Ensure fromTime is less than toTime
-    if (fromDate === getTodayDate() && fromTime >= toTime) {
-      alert("To Time must be greater than From Time.");
+    if (!location) {
+      alert("Please select a city.");
       return;
     }
 
     const payload: SearchPayload = {
-      fromDate,
-      fromTime,
-      toTime,
+      date,
       location,
-      numberOfPersons: Number(numberOfPersons),
+      numberOfPersons: 1,
     };
 
     try {
-      const result = await searchSlots(payload);
-      console.log("API Response:", result);
+      // const result = await searchSlots(payload);
+      let result = mockResponse;
+
+      if (location) {
+        result = result.filter(
+          (item: any) => item.location.toLowerCase() === location.toLowerCase()
+        );
+      }
+
+      console.log("Filtered Result:", result);
+      setHubData(result);
     } catch (error) {
       console.error("Search failed:", error);
     }
@@ -69,97 +57,56 @@ const SearchBar: React.FC = () => {
   ];
 
   return (
-    <div className="w-full px-6 py-4">
-      <div className="flex flex-col md:flex-row flex-wrap gap-4 items-center">
-        {/* Date Picker */}
-        <div className="flex-1 w-full">
-          <input
-            type="date"
-            value={fromDate}
-            onChange={(e) => {
-              setFromDate(e.target.value);
-              setFromTime("");
-              setToTime("");
-            }}
-            min={getTodayDate()}
-            className="w-full pl-3 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-
-        {/* From Time */}
-        <div className="flex-1 w-full">
-          <input
-            type="time"
-            value={fromTime}
-            onChange={(e) => {
-              setFromTime(e.target.value);
-              // Reset toTime if it's invalid
-              if (toTime && e.target.value >= toTime) {
-                setToTime("");
-              }
-            }}
-            min={fromDate === getTodayDate() ? getCurrentTime() : "00:00"}
-            max="23:59"
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-
-        {/* To Time */}
-        <div className="flex-1 w-full">
-          <input
-            type="time"
-            value={toTime}
-            onChange={(e) => setToTime(e.target.value)}
-            min={
-              fromTime ||
-              (fromDate === getTodayDate() ? getCurrentTime() : "00:00")
-            }
-            max={fromDate === getTodayDate() ? getEndOfDay() : "23:59"}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-
-        {/* City Dropdown */}
-        <div className="flex-1 w-full">
-          <select
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="" disabled>
-              Select City
-            </option>
-            {cities.map((city) => (
-              <option key={city} value={city}>
-                {city}
+    <>
+      <section className="flex justify-center items-center mt-8 px-4">
+        <div className="bg-white w-full max-w-lg px-8 py-6 rounded-xl shadow-lg space-y-5">
+          {/* City Dropdown */}
+          <div>
+            <select
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="" disabled>
+                Select City
               </option>
-            ))}
-          </select>
-        </div>
+              {cities.map((city) => (
+                <option key={city} value={city}>
+                  {city}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        {/* Number of Seats */}
-        <div className="flex-1 w-full">
-          <input
-            type="number"
-            min="1"
-            value={numberOfPersons}
-            onChange={(e) => setNumberOfPersons(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Number of seats"
-          />
-        </div>
+          {/* Date Picker */}
+          <div className="relative">
+            <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <Calendar className="h-5 w-5 text-gray-400" />
+            </span>
+            <input
+              type="date"
+              className="pl-10 w-full py-3 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              required
+            />
+          </div>
 
-        {/* Search Button */}
-        <div className="flex-1 w-full">
-          <button
-            onClick={handleSearch}
-            className="w-full bg-[#0c2045] text-white px-4 py-2 rounded-lg hover:bg-[#14336e] transition"
-          >
-            Search
-          </button>
+          {/* Search Button */}
+          <div>
+            <button
+              onClick={handleSearch}
+              className="w-full bg-[#0c2045] text-white py-3 rounded-lg font-medium hover:bg-[#14336e] transition"
+            >
+              Search
+            </button>
+          </div>
         </div>
-      </div>
-    </div>
+      </section>
+
+      {/* Conditionally render Hub */}
+      {hubData && <Hub data={hubData} />}
+    </>
   );
 };
 

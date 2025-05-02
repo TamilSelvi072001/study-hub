@@ -9,15 +9,17 @@ const Header = () => {
   };
 
   return (
-    <div className="bg-[#0c2045] text-white flex justify-between items-center p-8 text-[1.5rem] font-bold">
-      <div>FocusHub</div>
-      <div
-        className="right cursor-pointer transition-colors duration-300 hover:text-[#cbd5e1] flex items-center gap-2"
+    <header className="bg-[#0c2045] text-white flex justify-between items-center px-8 py-6 text-2xl font-bold shadow-md">
+      <div className="cursor-pointer" onClick={() => navigate("/")}>
+        FocusHub
+      </div>
+      <button
         onClick={handleLoginClick}
+        className="transition-colors duration-300 hover:text-[#cbd5e1] flex items-center gap-2"
       >
         Login
-      </div>
-    </div>
+      </button>
+    </header>
   );
 };
 
