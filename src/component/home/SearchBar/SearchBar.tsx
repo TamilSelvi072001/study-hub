@@ -6,6 +6,7 @@ import {
 } from "../../../apiService/SearchService";
 import Hub from "../../hub/Hub";
 import { Calendar } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const getTodayDate = () => new Date().toISOString().split("T")[0];
 
@@ -13,6 +14,7 @@ const SearchBar: React.FC = () => {
   const [date, setDate] = useState<string>(getTodayDate());
   const [location, setLocation] = useState<string>("");
   const [hubData, setHubData] = useState<any>(null);
+  const navigate = useNavigate();
 
   const handleSearch = async () => {
     if (!location) {
@@ -27,19 +29,20 @@ const SearchBar: React.FC = () => {
     };
 
     try {
-      // const result = await searchSlots(payload);
       let result = mockResponse;
 
-      if (location) {
-        result = result.filter(
-          (item: any) => item.location.toLowerCase() === location.toLowerCase()
-        );
-      }
+      result = result.filter(
+        (item: any) => item.location?.toLowerCase() === location.toLowerCase()
+      );
 
       console.log("Filtered Result:", result);
       setHubData(result);
+
+      // Navigate to SlashDetails page
+      navigate("/details");
     } catch (error) {
       console.error("Search failed:", error);
+      alert("Something went wrong. Please try again later.");
     }
   };
 
@@ -105,7 +108,7 @@ const SearchBar: React.FC = () => {
       </section>
 
       {/* Conditionally render Hub */}
-      {hubData && <Hub data={hubData} />}
+      {/* {hubData && <Hub data={hubData} />} */}
     </>
   );
 };

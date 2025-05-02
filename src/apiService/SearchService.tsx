@@ -100,6 +100,26 @@ export const mockResponse = [
   },
 ];
 
+export const mockHub = {
+  status: "success",
+  data: [
+    {
+      hubId: "hub_001",
+      hubName: "Hivespace",
+      location: "232, nfsk, chennai",
+      openSeats: 20,
+      imageUrl: "https://example.com/hivespace.jpg",
+    },
+    {
+      hubId: "hub_002",
+      hubName: "StudyNest",
+      location: "Block B, Nungambakkam, Chennai",
+      openSeats: 10,
+      imageUrl: "https://example.com/studynest.jpg",
+    },
+  ],
+};
+
 export const searchSlots = async (payload: SearchPayload) => {
   console.log("Mock Search API called with payload:", payload);
 
