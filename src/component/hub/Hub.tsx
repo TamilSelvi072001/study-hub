@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import { Button, Typography } from "@mui/material";
+import { useStudyHubContext } from "../Context/StudyHubContext";
 
 interface Seat {
   tableId: number;
   seatId: number;
 }
 
-const TOTAL_TABLES = 2;
-
 const Hub = () => {
   const [selectedSeats, setSelectedSeats] = useState<Seat[]>([]);
+  const { tableDetails } = useStudyHubContext();
 
   const handleSeatClick = (tableId: number, seatId: number) => {
     const alreadySelected = selectedSeats.some(
@@ -30,13 +30,13 @@ const Hub = () => {
   const getSeatPosition = (seatIndex: number) => {
     switch (seatIndex) {
       case 0:
-        return "-top-4 -left-4"; // Top-left outside
+        return "-top-4 -left-4";
       case 1:
-        return "-top-4 -right-4"; // Top-right outside
+        return "-top-4 -right-4";
       case 2:
-        return "-bottom-4 -left-4"; // Bottom-left outside
+        return "-bottom-4 -left-4";
       case 3:
-        return "-bottom-4 -right-4"; // Bottom-right outside
+        return "-bottom-4 -right-4";
       default:
         return "";
     }
@@ -44,40 +44,45 @@ const Hub = () => {
 
   return (
     <div className="p-6">
-      <Typography variant="h5" className="mb-4 font-bold">
+      <Typography variant="h5" className="mb-4 font-bold text-white">
         FocusHub Room Layout
       </Typography>
 
-      {/* ROOM */}
-      <div className="relative bg-[#f5f5f5] border-4 border-[#0c2045] rounded-xl w-[800px]mx-auto p-10 grid grid-cols-2 gap-12 place-items-center">
-        {[...Array(TOTAL_TABLES)].map((_, tableIndex) => (
-          <div key={tableIndex} className="relative">
+      <div className="relative bg-[#f5f5f5] border-4 border-[#0c2045] rounded-xl w-[800px] mx-auto p-10 grid grid-cols-2 gap-12 place-items-center">
+        {tableDetails?.map((table: any, tableIndex: number) => (
+          <div key={table.tableId} className="relative">
             {/* TABLE */}
             <div className="w-40 h-40 bg-white border-2 border-gray-600 rounded-lg flex items-center justify-center text-sm font-semibold shadow-md">
-              Table {tableIndex + 1}
+              Table {table.tableNum}
             </div>
 
             {/* CHAIRS */}
-            {[0, 1, 2, 3].map((seatIndex) => {
+            {table.seats.map((seat: any, seatIndex: number) => {
               const isSelected = selectedSeats.some(
-                (seat) =>
-                  seat.tableId === tableIndex && seat.seatId === seatIndex
+                (s) => s.tableId === table.tableId && s.seatId === seat.seatId
               );
 
               return (
                 <Button
-                  key={seatIndex}
+                  key={seat.seatId}
                   variant="contained"
-                  onClick={() => handleSeatClick(tableIndex, seatIndex)}
+                  onClick={() =>
+                    seat.available &&
+                    handleSeatClick(table.tableId, seat.seatId)
+                  }
+                  disabled={!seat.available}
                   className={`!absolute !w-10 !h-10 !min-w-0 !p-0 !rounded-full ${getSeatPosition(
                     seatIndex
                   )} ${
                     isSelected
                       ? "!bg-green-600 hover:!bg-green-700"
-                      : "!bg-gray-400 hover:!bg-gray-500"
+                      : seat.available
+                      ? "!bg-gray-400 hover:!bg-gray-500"
+                      : "!bg-red-400 cursor-not-allowed"
                   }`}
                 >
-                  {seatIndex + 1}
+                  {console.log(seat, "seat", seat.available, isSelected)}
+                  {seat.seatNumber}
                 </Button>
               );
             })}
@@ -94,7 +99,7 @@ const Hub = () => {
           <ul className="list-disc list-inside">
             {selectedSeats.map((seat, index) => (
               <li key={index}>
-                Table {seat.tableId + 1}, Seat {seat.seatId + 1}
+                Table {seat.tableId}, Seat ID {seat.seatId}
               </li>
             ))}
           </ul>

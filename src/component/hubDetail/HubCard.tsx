@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import People from "./People";
+import { getHubDetails } from "../../apiService/SearchService";
+import { useStudyHubContext } from "../Context/StudyHubContext";
 
 interface HubCardProps {
-  hubId: string;
+  hubId: number;
   hubName: string;
   address: string;
   availableSeats: number;
@@ -17,9 +19,16 @@ const HubCard: React.FC<HubCardProps> = ({
   imageUrl,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { setTableDetails } = useStudyHubContext(); // Assuming you have a context to manage state
 
-  const handleViewDetailClick = () => {
-    setIsModalOpen(true);
+  const handleViewDetailClick = async () => {
+    try {
+      setIsModalOpen(true);
+      const data = await getHubDetails(hubId);
+      setTableDetails(data); // store and show in modal
+    } catch (error) {
+      console.error("Could not load hub details", error);
+    }
   };
 
   const handleCloseModal = () => {

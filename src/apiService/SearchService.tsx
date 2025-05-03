@@ -28,3 +28,25 @@ export const searchSlots = async (city: string, date: string) => {
     throw new Error("An error occurred while fetching search results.");
   }
 };
+export const getHubDetails = async (hubId: number) => {
+  const endpoint = `http://localhost:8080/hubdetails/${hubId}`;
+
+  try {
+    const response = await fetch(endpoint, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText || "Failed to fetch hub details.");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error in getHubDetails:", error);
+    throw new Error("An error occurred while fetching hub details.");
+  }
+};

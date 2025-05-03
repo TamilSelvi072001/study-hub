@@ -27,8 +27,6 @@ const LoginPage: React.FC = () => {
 
       setUserName("");
       setPassword("");
-
-      // navigate("/dashboard");
     } catch (err: any) {
       setError(err.message || "Login failed. Try again.");
     } finally {

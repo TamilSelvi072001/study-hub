@@ -6,7 +6,7 @@ interface PeopleProps {
   onSubmit: (count: number) => void;
   onClose: () => void;
   availableSeats: number; // Add this to the interface
-  hubId: string;
+  hubId: number;
 }
 
 const People: React.FC<PeopleProps> = ({
