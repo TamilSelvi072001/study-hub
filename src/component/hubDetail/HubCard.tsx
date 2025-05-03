@@ -2,16 +2,18 @@ import React, { useState } from "react";
 import People from "./People";
 
 interface HubCardProps {
+  hubId: string;
   hubName: string;
   address: string;
-  openSeats: number;
+  availableSeats: number;
   imageUrl?: string;
 }
 
 const HubCard: React.FC<HubCardProps> = ({
+  hubId,
   hubName,
   address,
-  openSeats,
+  availableSeats,
   imageUrl,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -31,11 +33,12 @@ const HubCard: React.FC<HubCardProps> = ({
 
   return (
     <>
+      {/* Hub Card */}
       <div className="bg-white shadow-md rounded-2xl overflow-hidden hover:shadow-xl transition-shadow w-full max-w-md mx-auto">
         <img
           src={
             imageUrl ||
-            "https://images.unsplash.com/photo-1616628182509-3d11d79c1e4a"
+            "https://images.unsplash.com/photo-1616628182509-3d11d79c1e4a" // Fallback image
           }
           alt={hubName}
           className="h-48 w-full object-cover"
@@ -44,7 +47,7 @@ const HubCard: React.FC<HubCardProps> = ({
           <h3 className="text-xl font-bold text-[#0c2045]">{hubName}</h3>
           <p className="text-gray-600">{address}</p>
           <p className="text-green-600 font-medium">
-            {openSeats} open seat{openSeats !== 1 && "s"} available
+            {availableSeats} available seat{availableSeats !== 1 && "s"}
           </p>
           <button
             onClick={handleViewDetailClick}
@@ -55,16 +58,27 @@ const HubCard: React.FC<HubCardProps> = ({
         </div>
       </div>
 
+      {/* Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
+        <div
+          className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50"
+          role="dialog"
+          aria-modal="true"
+        >
           <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg relative">
             <button
               onClick={handleCloseModal}
               className="absolute top-2 right-2 text-gray-600 hover:text-black"
+              aria-label="Close modal"
             >
               &times;
             </button>
-            <People onSubmit={handlePeopleSubmit} onClose={handleCloseModal} />
+            <People
+              hubId={hubId}
+              onSubmit={handlePeopleSubmit}
+              onClose={handleCloseModal}
+              availableSeats={availableSeats}
+            />
           </div>
         </div>
       )}
