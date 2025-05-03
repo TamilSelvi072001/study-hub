@@ -49,7 +49,7 @@ const Hub = () => {
       </Typography>
 
       {/* ROOM */}
-      <div className="relative bg-[#f5f5f5] border-4 border-[#0c2045] rounded-lg w-[800px] h-[500px] mx-auto p-10 grid grid-cols-2 gap-12 place-items-center">
+      <div className="relative bg-[#f5f5f5] border-4 border-[#0c2045] rounded-xl w-[800px]mx-auto p-10 grid grid-cols-2 gap-12 place-items-center">
         {[...Array(TOTAL_TABLES)].map((_, tableIndex) => (
           <div key={tableIndex} className="relative">
             {/* TABLE */}
