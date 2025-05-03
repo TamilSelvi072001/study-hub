@@ -1,19 +1,15 @@
 import React, { useState } from "react";
-import {
-  searchSlots,
-  SearchPayload,
-  mockResponse,
-} from "../../../apiService/SearchService";
-import Hub from "../../hub/Hub";
+import { searchSlots, SearchPayload } from "../../../apiService/SearchService";
 import { Calendar } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useStudyHubContext } from "../../Context/StudyHubContext";
 
 const getTodayDate = () => new Date().toISOString().split("T")[0];
 
 const SearchBar: React.FC = () => {
   const [date, setDate] = useState<string>(getTodayDate());
   const [location, setLocation] = useState<string>("");
-  const [hubData, setHubData] = useState<any>(null);
+  const { setHubData, hubData } = useStudyHubContext(); // Use context to set hubData
   const navigate = useNavigate();
 
   const handleSearch = async () => {
@@ -29,23 +25,18 @@ const SearchBar: React.FC = () => {
     };
 
     try {
-      let result = mockResponse;
+      const result = await searchSlots(location, date); // Call the service function
+      console.log("API Response:", result);
+      setHubData(result); // Set hubData in context
 
-      result = result.filter(
-        (item: any) => item.location?.toLowerCase() === location.toLowerCase()
-      );
-
-      console.log("Filtered Result:", result);
-      setHubData(result);
-
-      // Navigate to SlashDetails page
+      // Navigate to the details page
       navigate("/details");
     } catch (error) {
       console.error("Search failed:", error);
       alert("Something went wrong. Please try again later.");
     }
   };
-
+  console.log(hubData);
   const cities: string[] = [
     "Mumbai",
     "Delhi",
@@ -106,9 +97,6 @@ const SearchBar: React.FC = () => {
           </div>
         </div>
       </section>
-
-      {/* Conditionally render Hub */}
-      {/* {hubData && <Hub data={hubData} />} */}
     </>
   );
 };

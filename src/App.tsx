@@ -1,12 +1,15 @@
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
 import AppRouter from "../src/appRoutes/AppRoutes";
+import { StudyHubProvider } from "./component/Context/StudyHubContext";
 
 const App = () => {
   return (
-    <BrowserRouter>
-      <AppRouter />
-    </BrowserRouter>
+    <StudyHubProvider>
+      <BrowserRouter>
+        <AppRouter />
+      </BrowserRouter>
+    </StudyHubProvider>
   );
 };
 

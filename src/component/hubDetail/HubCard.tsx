@@ -3,14 +3,14 @@ import People from "./People";
 
 interface HubCardProps {
   hubName: string;
-  location: string;
+  address: string;
   openSeats: number;
   imageUrl?: string;
 }
 
 const HubCard: React.FC<HubCardProps> = ({
   hubName,
-  location,
+  address,
   openSeats,
   imageUrl,
 }) => {
@@ -42,7 +42,7 @@ const HubCard: React.FC<HubCardProps> = ({
         />
         <div className="p-6 space-y-3">
           <h3 className="text-xl font-bold text-[#0c2045]">{hubName}</h3>
-          <p className="text-gray-600">{location}</p>
+          <p className="text-gray-600">{address}</p>
           <p className="text-green-600 font-medium">
             {openSeats} open seat{openSeats !== 1 && "s"} available
           </p>
