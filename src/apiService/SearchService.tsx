@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:8080";
+const BASE_URL = "https://studyhub-1-9pee.onrender.com";
 
 export interface SearchPayload {
   date: string;
@@ -29,7 +29,7 @@ export const searchSlots = async (city: string, date: string) => {
   }
 };
 export const getHubDetails = async (hubId: number) => {
-  const endpoint = `http://localhost:8080/hubdetails/${hubId}`;
+  const endpoint = `${BASE_URL}/${hubId}`;
 
   try {
     const response = await fetch(endpoint, {
