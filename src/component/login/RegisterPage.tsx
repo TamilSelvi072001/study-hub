@@ -5,7 +5,12 @@ import { useNavigate } from "react-router-dom";
 const RegisterPage = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [name, setName] = useState<string>("");
+  const [phone, setPhone] = useState<string>("");
+  const [dob, setDob] = useState<string>("");
   const [role, setRole] = useState<string>("USER");
+
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -14,8 +19,23 @@ const RegisterPage = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!email || !password || !role) {
+    // Check all fields
+    if (
+      !name ||
+      !phone ||
+      !dob ||
+      !email ||
+      !password ||
+      !confirmPassword ||
+      !role
+    ) {
       setError("Please fill in all fields.");
+      return;
+    }
+
+    // Validate password match
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
       return;
     }
 
@@ -24,10 +44,24 @@ const RegisterPage = () => {
     setIsLoading(true);
 
     try {
-      const data = await registerUser(email, password, role?.toUpperCase());
+      // Assuming registerUser is updated to accept these new fields
+      const data = await registerUser(
+        email,
+        password,
+        role?.toUpperCase(),
+        name,
+        phone,
+        dob
+      );
+
       setSuccess("User registered successfully.");
+      // Clear all inputs
       setEmail("");
       setPassword("");
+      setConfirmPassword("");
+      setName("");
+      setPhone("");
+      setDob("");
       setRole("USER");
     } catch (err: any) {
       setError(err.message || "Registration failed. Please try again.");
@@ -46,7 +80,6 @@ const RegisterPage = () => {
         {error && (
           <p className="text-red-700 bg-red-100 p-3 mb-4 rounded">{error}</p>
         )}
-
         {success && (
           <p className="text-green-700 bg-green-100 p-3 mb-4 rounded">
             {success}
@@ -54,6 +87,58 @@ const RegisterPage = () => {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label
+              htmlFor="name"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Name
+            </label>
+            <input
+              type="text"
+              id="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+              className="mt-1 w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#0c2045]"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="phone"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Phone Number
+            </label>
+            <input
+              type="tel"
+              id="phone"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              required
+              pattern="[0-9]{10}"
+              className="mt-1 w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#0c2045]"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="dob"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Date of Birth
+            </label>
+            <input
+              type="date"
+              id="dob"
+              value={dob}
+              onChange={(e) => setDob(e.target.value)}
+              required
+              className="mt-1 w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#0c2045]"
+            />
+          </div>
+
           <div>
             <label
               htmlFor="email"
@@ -83,6 +168,23 @@ const RegisterPage = () => {
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              required
+              className="mt-1 w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#0c2045]"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="confirmPassword"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Confirm Password
+            </label>
+            <input
+              type="password"
+              id="confirmPassword"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
               required
               className="mt-1 w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#0c2045]"
             />

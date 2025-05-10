@@ -3,7 +3,7 @@ import { loginUser } from "../../apiService/LoginService";
 import { useNavigate } from "react-router-dom";
 
 const LoginPage: React.FC = () => {
-  const [userName, setUserName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<string>("");
@@ -12,8 +12,8 @@ const LoginPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!userName || !password) {
-      setError("Please enter both username and password.");
+    if (!email || !password) {
+      setError("Please enter both email and password.");
       return;
     }
 
@@ -22,11 +22,14 @@ const LoginPage: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const result = await loginUser(userName, password);
+      const result = await loginUser(email, password);
       setSuccess("Login successful!");
 
-      setUserName("");
+      setEmail("");
       setPassword("");
+
+      // You might want to redirect on successful login
+      // navigate("/dashboard");
     } catch (err: any) {
       setError(err.message || "Login failed. Try again.");
     } finally {
@@ -54,16 +57,16 @@ const LoginPage: React.FC = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label
-              htmlFor="username"
+              htmlFor="email"
               className="block text-sm font-medium text-gray-700"
             >
-              Username
+              Email
             </label>
             <input
-              type="text"
-              id="username"
-              value={userName}
-              onChange={(e) => setUserName(e.target.value)}
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
               className="mt-1 w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#0c2045]"
             />

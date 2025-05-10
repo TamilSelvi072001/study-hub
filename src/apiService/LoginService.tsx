@@ -1,9 +1,10 @@
 // src/apiService/LoginService.ts
 
-const BASE_URL = "https://studyhub-1-9pee.onrender.com";
+// const BASE_URL = "https://studyhub-1-9pee.onrender.com";
+const BASE_URL = "http://localhost:8080/auth";
 
 //  LOGIN FUNCTION
-export const loginUser = async (userName: string, password: string) => {
+export const loginUser = async (email: string, password: string) => {
   const endpoint = `${BASE_URL}/login`;
 
   try {
@@ -12,7 +13,7 @@ export const loginUser = async (userName: string, password: string) => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ userName, password }),
+      body: JSON.stringify({ email, password }),
     });
 
     if (!response.ok) {
@@ -25,12 +26,13 @@ export const loginUser = async (userName: string, password: string) => {
     throw new Error("An error occurred during login.");
   }
 };
-
-// REGISTER FUNCTION
 export const registerUser = async (
-  userName: string,
+  email: string,
   password: string,
-  role: string
+  role: string,
+  userName: string,
+  phone: string,
+  dob: string // format: 'YYYY-MM-DD'
 ) => {
   const endpoint = `${BASE_URL}/register`;
 
@@ -41,9 +43,12 @@ export const registerUser = async (
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        userName,
+        email,
         password,
-        roles: [role], // Backend expects an array
+        roles: [role], // Backend expects a set
+        userName,
+        phone,
+        dob, // Ensure it's in YYYY-MM-DD format to match LocalDate
       }),
     });
 
@@ -52,7 +57,7 @@ export const registerUser = async (
       throw new Error(errorText || "Registration failed.");
     }
 
-    return await response.text(); // or response.json()
+    return await response.text(); // or response.json() based on backend
   } catch (error) {
     throw new Error("An error occurred during registration.");
   }
