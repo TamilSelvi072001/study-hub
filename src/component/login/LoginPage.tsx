@@ -24,12 +24,9 @@ const LoginPage: React.FC = () => {
     try {
       const result = await loginUser(email, password);
       setSuccess("Login successful!");
-
       setEmail("");
       setPassword("");
-
-      // You might want to redirect on successful login
-      // navigate("/dashboard");
+      navigate("/");
     } catch (err: any) {
       setError(err.message || "Login failed. Try again.");
     } finally {
@@ -38,8 +35,15 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0c2045] flex items-center justify-center">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+    <div className="min-h-screen bg-[#0c2045] flex items-center justify-center relative">
+      {/* Fullscreen Loader */}
+      {isLoading && (
+        <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-white" />
+        </div>
+      )}
+
+      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md relative z-10">
         <h2 className="text-2xl font-bold mb-6 text-center text-[#0c2045]">
           Login to FocusHub
         </h2>
@@ -69,6 +73,7 @@ const LoginPage: React.FC = () => {
               onChange={(e) => setEmail(e.target.value)}
               required
               className="mt-1 w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#0c2045]"
+              disabled={isLoading}
             />
           </div>
 
@@ -86,6 +91,7 @@ const LoginPage: React.FC = () => {
               onChange={(e) => setPassword(e.target.value)}
               required
               className="mt-1 w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#0c2045]"
+              disabled={isLoading}
             />
           </div>
 
@@ -107,6 +113,7 @@ const LoginPage: React.FC = () => {
           <button
             onClick={() => navigate("/register")}
             className="text-[#0c2045] font-semibold underline hover:text-[#143672] transition"
+            disabled={isLoading}
           >
             Register here
           </button>

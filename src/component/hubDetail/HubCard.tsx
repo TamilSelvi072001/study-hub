@@ -55,9 +55,9 @@ const HubCard: React.FC<HubCardProps> = ({
         <div className="p-6 space-y-3">
           <h3 className="text-xl font-bold text-[#0c2045]">{hubName}</h3>
           <p className="text-gray-600">{address}</p>
-          <p className="text-green-600 font-medium">
+          {/* <p className="text-green-600 font-medium">
             {availableSeats} available seat{availableSeats !== 1 && "s"}
-          </p>
+          </p> */}
           <button
             onClick={handleViewDetailClick}
             className="mt-4 bg-[#0c2045] text-white py-2 px-4 rounded hover:bg-[#102d5c] transition"

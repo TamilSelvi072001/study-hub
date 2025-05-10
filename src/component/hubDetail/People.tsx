@@ -20,10 +20,10 @@ const People: React.FC<PeopleProps> = ({
   const navigate = useNavigate();
 
   const handleSubmit = () => {
-    if (count < 1 || count > availableSeats) {
-      setError(`Please enter a number between 1 and ${availableSeats}.`);
-      return;
-    }
+    // if (count < 1 || count > availableSeats) {
+    //   setError(`Please enter a number between 1 and ${availableSeats}.`);
+    //   return;
+    // }
     setError("");
     onSubmit(count);
     console.log("Hub ID:", hubId, count);

@@ -9,7 +9,8 @@ const getTodayDate = () => new Date().toISOString().split("T")[0];
 const SearchBar: React.FC = () => {
   const [date, setDate] = useState<string>(getTodayDate());
   const [location, setLocation] = useState<string>("");
-  const { setHubData, hubData } = useStudyHubContext(); // Use context to set hubData
+  const [isLoading, setIsLoading] = useState<boolean>(false); // 🔁 Fullscreen loader
+  const { setHubData, hubData } = useStudyHubContext();
   const navigate = useNavigate();
 
   const handleSearch = async () => {
@@ -25,18 +26,18 @@ const SearchBar: React.FC = () => {
     };
 
     try {
-      const result = await searchSlots(location, date); // Call the service function
-      console.log("API Response:", result);
-      setHubData(result); // Set hubData in context
-
-      // Navigate to the details page
+      setIsLoading(true); // Start loader
+      const result = await searchSlots(location, date);
+      setHubData(result);
       navigate("/details");
     } catch (error) {
       console.error("Search failed:", error);
       alert("Something went wrong. Please try again later.");
+    } finally {
+      setIsLoading(false); // End loader
     }
   };
-  console.log(hubData);
+
   const cities: string[] = [
     "Mumbai",
     "Delhi",
@@ -52,6 +53,13 @@ const SearchBar: React.FC = () => {
 
   return (
     <>
+      {/* Loader overlay */}
+      {isLoading && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-white" />
+        </div>
+      )}
+
       <section className="flex justify-center items-center mt-8 px-4">
         <div className="bg-white w-full max-w-lg px-8 py-6 rounded-xl shadow-lg space-y-5">
           {/* City Dropdown */}
@@ -91,8 +99,9 @@ const SearchBar: React.FC = () => {
             <button
               onClick={handleSearch}
               className="w-full bg-[#0c2045] text-white py-3 rounded-lg font-medium hover:bg-[#14336e] transition"
+              disabled={isLoading}
             >
-              Search
+              {isLoading ? "Searching..." : "Search"}
             </button>
           </div>
         </div>
