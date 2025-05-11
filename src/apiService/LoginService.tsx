@@ -20,8 +20,10 @@ export const loginUser = async (email: string, password: string) => {
       const errorText = await response.text();
       throw new Error(errorText || "Login failed");
     }
-
-    return await response.text(); // or response.json() based on your API
+    const token = await response.text();
+    console.log("Token received:", token); // ✅ Log the token
+    localStorage.setItem("token", token); // ✅ Save token to localStorage
+    return token;
   } catch (error) {
     throw new Error("An error occurred during login.");
   }

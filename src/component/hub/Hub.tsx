@@ -9,7 +9,7 @@ interface Seat {
 
 const Hub = () => {
   const [selectedSeats, setSelectedSeats] = useState<Seat[]>([]);
-  const { tableDetails } = useStudyHubContext();
+  let { tableDetails } = useStudyHubContext();
 
   const handleSeatClick = (tableId: number, seatId: number) => {
     const alreadySelected = selectedSeats.some(

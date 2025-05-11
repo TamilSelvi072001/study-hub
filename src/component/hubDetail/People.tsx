@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { Alert, TextField, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { HubService } from "../../apiService/HubService";
+import { format } from "date-fns";
+import { useStudyHubContext } from "../Context/StudyHubContext";
 
 interface PeopleProps {
   onSubmit: (count: number) => void;
@@ -17,17 +20,30 @@ const People: React.FC<PeopleProps> = ({
 }) => {
   const [count, setCount] = useState<number>(1);
   const [error, setError] = useState<string>("");
+  const { setTableDetails } = useStudyHubContext();
   const navigate = useNavigate();
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     // if (count < 1 || count > availableSeats) {
     //   setError(`Please enter a number between 1 and ${availableSeats}.`);
     //   return;
     // }
-    setError("");
-    onSubmit(count);
-    console.log("Hub ID:", hubId, count);
-    navigate("/hub"); // Navigate to the Hub page
+
+    try {
+      const today = format(new Date(), "yyyy-MM-dd"); // or pass date from parent
+      const tableData = await HubService(hubId, today);
+      setTableDetails(tableData); // store and show in modal
+
+      console.log("Fetched tables with seat details:", tableData);
+
+      onSubmit(count); // still useful if you want to store person count
+      navigate("/hub", {
+        state: { hubId, tableData, numberOfPersons: count, date: today },
+      });
+    } catch (error) {
+      console.error("Failed to fetch hub details:", error);
+      setError("Unable to fetch tables. Please try again.");
+    }
   };
 
   return (
