@@ -56,7 +56,9 @@ const Hub = () => {
     const token = localStorage.getItem("token");
 
     try {
-      const response = await fetch("http://localhost:8080/api/book", {
+      const BASE_URL = "https://studyhub-1-9pee.onrender.com";
+
+      const response = await fetch(`${BASE_URL}/api/book`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

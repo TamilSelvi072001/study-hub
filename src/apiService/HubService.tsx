@@ -1,4 +1,5 @@
-const BASE_URL = "http://localhost:8080/api";
+// const BASE_URL = "http://localhost:8080/api";
+const BASE_URL = "https://studyhub-1-9pee.onrender.com/api";
 
 export interface Seat {
   seatId: number;
