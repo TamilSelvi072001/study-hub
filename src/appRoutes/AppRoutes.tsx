@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import RegisterPage from "../component/login/RegisterPage";
 import LoginPage from "../component/login/LoginPage";
 import Home from "../component/home/Home";
@@ -15,6 +15,7 @@ const AppRoutes = () => {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/details" element={<HubPage />} />
       <Route path="/hub" element={<Hub />} />
+      <Route path="*" element={<Navigate to="/home" replace />} />
     </Routes>
   );
 };

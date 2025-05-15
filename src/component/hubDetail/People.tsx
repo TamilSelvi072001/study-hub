@@ -8,7 +8,7 @@ import { useStudyHubContext } from "../Context/StudyHubContext";
 interface PeopleProps {
   onSubmit: (count: number) => void;
   onClose: () => void;
-  availableSeats: number; // Add this to the interface
+  availableSeats: number;
   hubId: number;
 }
 
@@ -20,31 +20,37 @@ const People: React.FC<PeopleProps> = ({
 }) => {
   const [count, setCount] = useState<number>(1);
   const [error, setError] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const { setTableDetails } = useStudyHubContext();
   const navigate = useNavigate();
 
   const handleSubmit = async () => {
-    // if (count < 1 || count > availableSeats) {
-    //   setError(`Please enter a number between 1 and ${availableSeats}.`);
-    //   return;
-    // }
+    setIsLoading(true);
 
     try {
-      const today = format(new Date(), "yyyy-MM-dd"); // or pass date from parent
+      const today = format(new Date(), "yyyy-MM-dd");
       const tableData = await HubService(hubId, today);
-      setTableDetails(tableData); // store and show in modal
+      setTableDetails(tableData);
 
-      console.log("Fetched tables with seat details:", tableData);
-
-      onSubmit(count); // still useful if you want to store person count
+      onSubmit(count);
       navigate("/hub", {
         state: { hubId, tableData, numberOfPersons: count, date: today },
       });
     } catch (error) {
       console.error("Failed to fetch hub details:", error);
       setError("Unable to fetch tables. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-white" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
@@ -63,33 +69,34 @@ const People: React.FC<PeopleProps> = ({
 
       {error && <Alert severity="error">{error}</Alert>}
 
-      <Button
-        variant="contained"
-        onClick={handleSubmit}
-        sx={{
-          backgroundColor: "#0c2045",
-          color: "white",
-          "&:hover": {
-            backgroundColor: "#102d5c",
-          },
-          marginRight: "20px",
-        }}
-      >
-        Confirm
-      </Button>
+      <div className="flex justify-end space-x-4">
+        <Button
+          variant="contained"
+          onClick={handleSubmit}
+          sx={{
+            backgroundColor: "#0c2045",
+            color: "white",
+            "&:hover": {
+              backgroundColor: "#102d5c",
+            },
+          }}
+        >
+          Confirm
+        </Button>
 
-      <Button
-        onClick={onClose}
-        sx={{
-          color: "#0c2045",
-          border: "1px solid #0c2045",
-          "&:hover": {
-            backgroundColor: "#f0f0f0",
-          },
-        }}
-      >
-        Cancel
-      </Button>
+        <Button
+          onClick={onClose}
+          sx={{
+            color: "#0c2045",
+            border: "1px solid #0c2045",
+            "&:hover": {
+              backgroundColor: "#f0f0f0",
+            },
+          }}
+        >
+          Cancel
+        </Button>
+      </div>
     </div>
   );
 };

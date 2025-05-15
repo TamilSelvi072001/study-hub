@@ -28,9 +28,9 @@ export const HubService = async (
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        ...(token && { Authorization: `Bearer ${token}` }), // ✅ Add token to header
+        // ...(token && { Authorization: `Bearer ${token}` }), // ✅ Add token to header
       },
-      credentials: "include", // ✅ Also required if backend has allowCredentials(true)
+      // credentials: "include", // ✅ Also required if backend has allowCredentials(true)
     });
 
     if (!response.ok) {

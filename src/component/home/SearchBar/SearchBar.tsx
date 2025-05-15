@@ -5,8 +5,11 @@ import { useNavigate } from "react-router-dom";
 import { useStudyHubContext } from "../../Context/StudyHubContext";
 
 const getTodayDate = () => new Date().toISOString().split("T")[0];
+type SearchBarProps = {
+  cities: string[];
+};
 
-const SearchBar: React.FC = () => {
+const SearchBar: React.FC<SearchBarProps> = ({ cities }) => {
   const [date, setDate] = useState<string>(getTodayDate());
   const [location, setLocation] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false); // 🔁 Fullscreen loader
@@ -37,19 +40,6 @@ const SearchBar: React.FC = () => {
       setIsLoading(false); // End loader
     }
   };
-
-  const cities: string[] = [
-    "Mumbai",
-    "Delhi",
-    "Bengaluru",
-    "Chennai",
-    "Hyderabad",
-    "Kolkata",
-    "Pune",
-    "Ahmedabad",
-    "Jaipur",
-    "Coimbatore",
-  ];
 
   return (
     <>
