@@ -46,8 +46,9 @@ const HubCard: React.FC<HubCardProps> = ({
       <div className="bg-white shadow-md rounded-2xl overflow-hidden hover:shadow-xl transition-shadow w-full max-w-md mx-auto">
         <img
           src={
-            imageUrl ||
-            "https://images.unsplash.com/photo-1616628182509-3d11d79c1e4a" // Fallback image
+            imageUrl
+              ? `http://localhost:8080${imageUrl}` // <- Fix: prepend backend base URL
+              : "https://images.unsplash.com/photo-1616628182509-3d11d79c1e4a"
           }
           alt={hubName}
           className="h-48 w-full object-cover"
