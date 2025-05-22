@@ -84,19 +84,44 @@ const Hub = () => {
     }
   };
 
-  const getSeatPosition = (seatIndex: number) => {
-    switch (seatIndex) {
-      case 0:
-        return "-top-4 -left-4";
-      case 1:
-        return "-top-4 -right-4";
-      case 2:
-        return "-bottom-4 -left-4";
-      case 3:
-        return "-bottom-4 -right-4";
-      default:
-        return "";
-    }
+  const getSeatPosition = (seatIndex: number, totalSeats: number) => {
+    const positions = {
+      one: ["top-1/2 left-[120%] -translate-y-1/2"],
+
+      two: [
+        "top-1/2 -left-5 -translate-y-1/2", // left outside
+        "top-1/2 -right-5 -translate-y-1/2", // right outside
+      ],
+
+      corner: [
+        "-top-5 -left-5", // top-left outside
+        "-top-5 -right-5", // top-right outside
+        "-bottom-5 -left-5", // bottom-left outside
+        "-bottom-5 -right-5", // bottom-right outside
+      ],
+
+      side: [
+        "-top-5 left-1/2 -translate-x-1/2", // top center outside
+        "-bottom-5 left-1/2 -translate-x-1/2", // bottom center outside
+        "top-1/2 -left-5 -translate-y-1/2", // center left outside
+        "top-1/2 -right-5 -translate-y-1/2", // center right outside
+      ],
+    };
+
+    if (totalSeats === 1) return positions.one[0];
+
+    if (totalSeats === 2) return positions.two[seatIndex] || "";
+
+    if (totalSeats <= 4) return positions.corner[seatIndex] || "";
+
+    if (seatIndex < 4) return positions.corner[seatIndex];
+
+    return positions.side[(seatIndex - 4) % positions.side.length];
+  };
+
+  const getTableSize = (seatCount: number) => {
+    if (seatCount > 4) return "w-56 h-36"; // wider rectangular table
+    return "w-36 h-36"; // uniform for 1–4
   };
 
   return (
@@ -105,10 +130,14 @@ const Hub = () => {
         FocusHub Room Layout
       </Typography>
 
-      <div className="relative bg-[#f5f5f5] border-4 border-[#0c2045] rounded-xl w-[800px] mx-auto p-10 grid grid-cols-2 gap-12 place-items-center">
+      <div className="relative bg-[#f5f5f5] border-4 border-[#0c2045] rounded-xl w-[800px] mx-auto p-10 grid grid-cols-2 gap-20 place-items-center">
         {tableDetails?.map((table: TableData) => (
           <div key={table.tableId} className="relative">
-            <div className="w-40 h-40 bg-white border-2 border-gray-600 rounded-lg flex items-center justify-center text-sm font-semibold shadow-md">
+            <div
+              className={`bg-white border-2 border-gray-600 rounded-lg flex items-center justify-center text-sm font-semibold shadow-md ${getTableSize(
+                table.seats.length
+              )}`}
+            >
               Table {table.tableNumber}
             </div>
 
@@ -127,7 +156,8 @@ const Hub = () => {
                   }
                   disabled={!seat.available}
                   className={`!absolute !w-10 !h-10 !min-w-0 !p-0 !rounded-full ${getSeatPosition(
-                    seatIndex
+                    seatIndex,
+                    table.seats.length
                   )} ${
                     isSelected
                       ? "!bg-green-600 hover:!bg-green-700"

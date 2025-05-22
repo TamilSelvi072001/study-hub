@@ -7,17 +7,27 @@ import axios from "axios";
 
 function Home() {
   const [cities, setCities] = useState([]);
-  // const BASE_URL = "http://localhost:8080/api";
+  const [isLoading, setIsLoading] = useState(true);
+
   const BASE_URL = "https://studyhub-1-9pee.onrender.com/api";
 
   useEffect(() => {
     axios
       .get(`${BASE_URL}/cities/names`)
       .then((res) => setCities(res.data))
-      .catch((err) => console.error(err));
+      .catch((err) => console.error(err))
+      .finally(() => setIsLoading(false));
   }, []);
+
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen relative">
+      {/* Fullscreen Spinner */}
+      {isLoading && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-white" />
+        </div>
+      )}
+
       {/* Header Section */}
       <Header />
 
