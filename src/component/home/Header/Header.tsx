@@ -1,10 +1,45 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import UserAvatar from "./UserAvatar";
 
 const Header = () => {
   const navigate = useNavigate();
+  const [userData, setUserData] = useState<{
+    name: string;
+    email: string;
+  } | null>(null);
 
-  const handleLoginClick = () => {
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      try {
+        const response = await fetch(
+          "http://localhost:8080/api/protected-data",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (response.ok) {
+          const data = await response.json();
+          setUserData({ name: data.name, email: data.email });
+          console.log(data);
+        }
+      } catch (error) {
+        console.error("Token expired or invalid");
+      }
+    };
+
+    fetchUserInfo();
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setUserData(null);
     navigate("/login");
   };
 
@@ -13,12 +48,21 @@ const Header = () => {
       <div className="cursor-pointer" onClick={() => navigate("/")}>
         FocusHub
       </div>
-      <button
-        onClick={handleLoginClick}
-        className="transition-colors duration-300 hover:text-[#cbd5e1] flex items-center gap-2"
-      >
-        Login
-      </button>
+
+      {userData ? (
+        <UserAvatar
+          name={userData.name}
+          email={userData.email}
+          onLogout={handleLogout}
+        />
+      ) : (
+        <button
+          onClick={() => navigate("/login")}
+          className="transition-colors duration-300 hover:text-[#cbd5e1] flex items-center gap-2"
+        >
+          Login
+        </button>
+      )}
     </header>
   );
 };
