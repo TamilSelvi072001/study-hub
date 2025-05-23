@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { loginUser } from "../../apiService/LoginService";
 import { useNavigate } from "react-router-dom";
+import { HomeIcon } from "lucide-react";
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState<string>("");
@@ -44,7 +45,24 @@ const LoginPage: React.FC = () => {
       )}
 
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md relative z-10">
-        <h2 className="text-2xl font-bold mb-6 text-center text-[#0c2045]">
+        <button
+          onClick={() => navigate(-1)}
+          className="absolute top-4 left-4 text-[#0c2045] font-semibold hover:text-[#143672] transition"
+          aria-label="Go back"
+        >
+          ← Back
+        </button>
+
+        {/* 🏠 Home Button - Top Right */}
+        <button
+          onClick={() => navigate("/")}
+          className="absolute top-4 right-4 flex items-center gap-1 text-[#0c2045] font-semibold hover:text-[#143672] transition"
+          aria-label="Go home"
+        >
+          <HomeIcon size={18} />
+          Home
+        </button>
+        <h2 className="text-2xl font-bold mt-6 mb-6 text-center text-[#0c2045]">
           Login to FocusHub
         </h2>
 

@@ -8,6 +8,9 @@ import {
   DialogActions,
 } from "@mui/material";
 import { useStudyHubContext } from "../Context/StudyHubContext";
+import { useNavigate } from "react-router-dom";
+import Header from "../home/Header/Header";
+import Footer from "../home/Footer/Footer";
 
 // Define interfaces for Seat and TableData
 interface SeatData {
@@ -32,6 +35,7 @@ const Hub = () => {
   const [selectedSeats, setSelectedSeats] = useState<Seat[]>([]);
   const [openDialog, setOpenDialog] = useState(false);
   let { tableDetails } = useStudyHubContext();
+  const navigate = useNavigate();
 
   const handleSeatClick = (tableId: number, seatId: number) => {
     const alreadySelected = selectedSeats.some(
@@ -54,6 +58,13 @@ const Hub = () => {
 
   const handleBookingApi = async () => {
     const token = localStorage.getItem("token");
+    console.log(token, "token");
+
+    if (!token) {
+      alert("Please log in to confirm your booking.");
+      navigate("/login"); // change "/login" to your actual login route
+      return;
+    }
 
     try {
       const BASE_URL = "https://studyhub-1-9pee.onrender.com";
@@ -77,7 +88,7 @@ const Hub = () => {
 
       alert("Booking successful!");
       setSelectedSeats([]);
-      setOpenDialog(false); // Close the dialog
+      setOpenDialog(false);
     } catch (error) {
       alert("Booking failed. Please try again.");
       console.error(error);
@@ -125,10 +136,8 @@ const Hub = () => {
   };
 
   return (
-    <div className="p-6">
-      <Typography variant="h5" className="mb-4 font-bold text-white">
-        FocusHub Room Layout
-      </Typography>
+    <div>
+      <Header />
 
       <div className="relative bg-[#f5f5f5] border-4 border-[#0c2045] rounded-xl w-[800px] mx-auto p-10 grid grid-cols-2 gap-20 place-items-center">
         {tableDetails?.map((table: TableData) => (
@@ -232,6 +241,7 @@ const Hub = () => {
           </Button>
         </DialogActions>
       </Dialog>
+      <Footer />
     </div>
   );
 };

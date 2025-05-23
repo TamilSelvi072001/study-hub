@@ -47,7 +47,7 @@ const HubCard: React.FC<HubCardProps> = ({
         <img
           src={
             imageUrl
-              ? `http://localhost:8080${imageUrl}` // <- Fix: prepend backend base URL
+              ? `https://studyhub-1-9pee.onrender.com${imageUrl}` // <- Fix: prepend backend base URL
               : "https://images.unsplash.com/photo-1616628182509-3d11d79c1e4a"
           }
           alt={hubName}
