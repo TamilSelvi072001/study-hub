@@ -27,7 +27,15 @@ const LoginPage: React.FC = () => {
       setSuccess("Login successful!");
       setEmail("");
       setPassword("");
-      navigate("/");
+
+      // Redirect after login if saved
+      const redirectPath = localStorage.getItem("redirectAfterLogin");
+      if (redirectPath) {
+        localStorage.removeItem("redirectAfterLogin");
+        navigate(redirectPath);
+      } else {
+        navigate("/");
+      }
     } catch (err: any) {
       setError(err.message || "Login failed. Try again.");
     } finally {

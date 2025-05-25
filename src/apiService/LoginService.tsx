@@ -1,6 +1,6 @@
 // src/apiService/LoginService.ts
 
-const BASE_URL = "https://studyhub-1-9pee.onrender.com";
+const BASE_URL = "https://studyhub-1-9pee.onrender.com/auth";
 // const BASE_URL = "http://localhost:8080/auth";
 
 //  LOGIN FUNCTION

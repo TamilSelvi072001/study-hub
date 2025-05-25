@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Typography,
@@ -55,20 +55,53 @@ const Hub = () => {
       ]);
     }
   };
+  useEffect(() => {
+    const pending = localStorage.getItem("pendingSeats");
+    if (pending) {
+      try {
+        const parsedSeats = JSON.parse(pending);
+        setSelectedSeats(parsedSeats);
+        localStorage.removeItem("pendingSeats");
+      } catch (err) {
+        console.error("Failed to parse saved seats", err);
+      }
+    }
+  }, []);
+  function getEmailFromToken() {
+    const token = localStorage.getItem("token");
+    if (!token) return null;
 
+    const payloadBase64 = token.split(".")[1];
+    const payloadJson = atob(payloadBase64); // decode base64
+    const payload = JSON.parse(payloadJson);
+    console.log(payload, "payload");
+    return payload.sub; // usually the email
+  }
   const handleBookingApi = async () => {
     const token = localStorage.getItem("token");
     console.log(token, "token");
 
     if (!token) {
+      localStorage.setItem("pendingSeats", JSON.stringify(selectedSeats));
+      localStorage.setItem("redirectAfterLogin", window.location.pathname);
       alert("Please log in to confirm your booking.");
-      navigate("/login"); // change "/login" to your actual login route
+      navigate("/login");
       return;
     }
 
     try {
       const BASE_URL = "https://studyhub-1-9pee.onrender.com";
+      const userString = localStorage.getItem("user");
+      const user = userString ? JSON.parse(userString) : null;
 
+      if (user) {
+        console.log(user.email); // ✅ This will print the user's email
+      } else {
+        console.log("No user found in localStorage");
+      }
+
+      const email = getEmailFromToken();
+      console.log(email); // prints: tamilselvi072001@gmail.com
       const response = await fetch(`${BASE_URL}/api/book`, {
         method: "POST",
         headers: {
@@ -76,6 +109,7 @@ const Hub = () => {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
+          email: email,
           seats: selectedSeats,
           date: new Date().toISOString().split("T")[0],
         }),
@@ -203,7 +237,15 @@ const Hub = () => {
           <Button
             variant="contained"
             size="large"
-            onClick={() => setOpenDialog(true)}
+            onClick={() => {
+              const token = localStorage.getItem("token");
+              if (!token) {
+                alert("Please log in to confirm your booking.");
+                navigate("/login");
+              } else {
+                setOpenDialog(true);
+              }
+            }}
             disabled={selectedSeats.length === 0}
             className="!bg-[#163d73] hover:!bg-[#0b2548] !text-white !rounded-full !px-6 !py-2 !text-base transition-all duration-200 shadow-md"
           >

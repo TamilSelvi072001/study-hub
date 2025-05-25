@@ -8,6 +8,8 @@ const Header = () => {
     name: string;
     email: string;
   } | null>(null);
+  const BASE_URL = "https://studyhub-1-9pee.onrender.com";
+  // const BASE_URL = "http://localhost:8080";
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -15,14 +17,11 @@ const Header = () => {
       if (!token) return;
 
       try {
-        const response = await fetch(
-          "http://localhost:8080/api/protected-data",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await fetch(`${BASE_URL}/api/protected-data`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
         if (response.ok) {
           const data = await response.json();
